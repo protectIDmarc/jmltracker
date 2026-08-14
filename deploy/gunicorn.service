@@ -1,0 +1,43 @@
+# systemd unit for the JML tracker.
+# Install to /etc/systemd/system/jmltracker.service, then:
+#   sudo systemctl daemon-reload && sudo systemctl enable --now jmltracker
+#
+# Gunicorn, never `runserver` — runserver is single-threaded, unhardened and
+# explicitly not for production use.
+
+[Unit]
+Description=JML Access Request Tracker (Gunicorn)
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=notify
+User=secops
+Group=secops
+WorkingDirectory=/opt/jmltracker/jmltracker
+
+# Config comes from the environment file, not from this unit, so the same unit
+# works on any host. Keep it 0600 and owned by root.
+EnvironmentFile=/opt/jmltracker/jmltracker/.env
+
+ExecStart=/opt/jmltracker/jmltracker/.venv/bin/gunicorn \
+    --workers 3 \
+    --bind unix:/run/jmltracker/gunicorn.sock \
+    --access-logfile - \
+    --error-logfile - \
+    jmltracker.wsgi:application
+
+ExecReload=/bin/kill -s HUP $MAINPID
+RuntimeDirectory=jmltracker
+Restart=on-failure
+RestartSec=5
+
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/jmltracker/jmltracker
+
+[Install]
+WantedBy=multi-user.target

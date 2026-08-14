@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% comment %}
+Deliberately shows nothing credential-shaped: no demo usernames, no "sign in
+as" shortcut. The README is the single place demo credentials are published.
+{% endcomment %}
+
+{% block title %}Sign in — JML Access Request Tracker{% endblock %}
+
+{% block content %}
+  <h1>Sign in</h1>
+
+  {% if form.errors %}
+    <p>Your username and password did not match. Please try again.</p>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Sign in</button>
+  </form>
+{% endblock %}

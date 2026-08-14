@@ -1,0 +1,29 @@
+# Secrets — never commit
+.env
+*.env
+!.env.example
+
+# Tooling — belt and braces. These live in the parent directory, outside this
+# repo, so git cannot reach them; listed here as a net in case one is ever
+# created inside the repo by mistake.
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+.mcp.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Django
+*.log
+staticfiles/
+media/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
