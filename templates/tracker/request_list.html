@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Access requests — JML Access Request Tracker{% endblock %}
+
+{% block content %}
+  <h1>Access requests</h1>
+  <p class="subtitle">
+    {{ total_count }} request{{ total_count|pluralize }} on record.
+  </p>
+
+  <div class="card">
+    {% if page_obj.object_list %}
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Employee</th>
+              <th scope="col">Type</th>
+              <th scope="col">Systems</th>
+              <th scope="col">Requested</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for req in page_obj %}
+              <tr>
+                <td>
+                  <a href="{% url 'request_detail' req.pk %}">{{ req.employee }}</a>
+                  <div class="muted">{{ req.employee.department }}</div>
+                </td>
+                <td>{{ req.get_request_type_display }}</td>
+                {# join reads the prefetch cache; .count would hit the DB per row #}
+                <td class="muted">{{ req.systems.all|join:", "|truncatechars:44 }}</td>
+                <td>{{ req.requested_date|date:"j M Y" }}</td>
+                <td>
+                  <span class="badge status-{{ req.status }}">{{ req.get_status_display }}</span>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="empty">
+        No access requests yet.
+      </p>
+    {% endif %}
+  </div>
+
+  {% if page_obj.has_other_pages %}
+    <div class="pagination">
+      {% if page_obj.has_previous %}
+        <a class="button" href="?page={{ page_obj.previous_page_number }}">&larr; Previous</a>
+      {% endif %}
+      <span class="spacer">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+      </span>
+      {% if page_obj.has_next %}
+        <a class="button" href="?page={{ page_obj.next_page_number }}">Next &rarr;</a>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endblock %}

@@ -1,13 +1,39 @@
-{# Minimal shell only. The real base template and nav land at M3. #}
-<!doctype html>
+{% load static %}<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}JML Access Request Tracker{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
 </head>
 <body>
-  <main>
+  {% if user.is_authenticated %}
+    <header class="site-header">
+      <div class="inner">
+        <a class="brand" href="{% url 'home' %}">JML Access Request Tracker</a>
+        <nav>
+          {# Only routes that exist are linked. The dashboard arrives at M6. #}
+          <a href="{% url 'request_list' %}"
+             class="{% if request.resolver_match.url_name == 'request_list' %}active{% endif %}">Requests</a>
+        </nav>
+        <div class="session">
+          <span>{{ user.get_username }}</span>
+          {# Logout is POST-only in modern Django, so this is a form, not a link. #}
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Sign out</button>
+          </form>
+        </div>
+      </div>
+    </header>
+  {% endif %}
+
+  <main class="container">
+    {% if messages %}
+      {% for message in messages %}
+        <p class="muted">{{ message }}</p>
+      {% endfor %}
+    {% endif %}
     {% block content %}{% endblock %}
   </main>
 </body>

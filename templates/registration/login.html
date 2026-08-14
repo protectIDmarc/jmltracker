@@ -8,15 +8,20 @@ as" shortcut. The README is the single place demo credentials are published.
 {% block title %}Sign in — JML Access Request Tracker{% endblock %}
 
 {% block content %}
-  <h1>Sign in</h1>
+  <div class="card auth">
+    <h1>Sign in</h1>
+    <p class="muted">JML Access Request Tracker</p>
 
-  {% if form.errors %}
-    <p>Your username and password did not match. Please try again.</p>
-  {% endif %}
+    {% if form.errors %}
+      <p class="errorlist">Your username and password did not match. Please try again.</p>
+    {% endif %}
 
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Sign in</button>
-  </form>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="primary">Sign in</button>
+      {# Preserves ?next= so a deep link survives the login redirect. #}
+      <input type="hidden" name="next" value="{{ next }}">
+    </form>
+  </div>
 {% endblock %}

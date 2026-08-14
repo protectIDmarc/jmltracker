@@ -174,7 +174,7 @@ The core is under active development against a fixed build order. Complete and i
 - [x] Environment-driven project scaffold, three-table data model, admin
 - [x] PostgreSQL across all environments
 - [x] Seed data
-- [ ] Read paths (list, detail)
+- [x] Read paths (list, detail)
 - [ ] Write paths (create, edit, withdraw)
 - [ ] Guided create wizard
 - [ ] Dashboard and approval guards

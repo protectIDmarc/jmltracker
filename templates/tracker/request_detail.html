@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}{{ access_request.employee }} — access request{% endblock %}
+
+{% block content %}
+  <h1>{{ access_request.get_request_type_display }} request</h1>
+  <p class="subtitle">
+    <a href="{% url 'request_list' %}">&larr; All requests</a>
+  </p>
+
+  <div class="card">
+    <dl class="detail-grid">
+      <dt>Employee</dt>
+      <dd>
+        {{ access_request.employee.full_name }}
+        <div class="muted">{{ access_request.employee.email }}</div>
+      </dd>
+
+      <dt>Department</dt>
+      <dd>
+        {{ access_request.employee.department }}
+        <div class="muted">{{ access_request.employee.job_title }}</div>
+      </dd>
+
+      <dt>Status</dt>
+      <dd>
+        <span class="badge status-{{ access_request.status }}">
+          {{ access_request.get_status_display }}
+        </span>
+      </dd>
+
+      <dt>
+        {# The brief's one form, three framings: the label reflects intent. #}
+        {% if access_request.request_type == 'joiner' %}Systems to grant
+        {% elif access_request.request_type == 'leaver' %}Systems to revoke
+        {% else %}Systems affected{% endif %}
+      </dt>
+      <dd>
+        {% if access_request.systems.all %}
+          <ul class="system-list">
+            {% for system in access_request.systems.all %}
+              <li class="{% if not system.is_active %}inactive{% endif %}">
+                {{ system.name }}{% if not system.is_active %} (retired){% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <span class="muted">None recorded.</span>
+        {% endif %}
+      </dd>
+
+      <dt>Requested date</dt>
+      <dd>{{ access_request.requested_date|date:"j F Y" }}</dd>
+
+      <dt>Raised by</dt>
+      <dd>{{ access_request.requested_by.get_username }}</dd>
+
+      <dt>Approver</dt>
+      <dd>
+        {% if access_request.approver %}
+          {{ access_request.approver.get_username }}
+        {% else %}
+          <span class="muted">Not yet decided.</span>
+        {% endif %}
+      </dd>
+
+      <dt>Decided</dt>
+      <dd>
+        {% if access_request.decided_at %}
+          {{ access_request.decided_at|date:"j F Y, H:i" }}
+        {% else %}
+          <span class="muted">&mdash;</span>
+        {% endif %}
+      </dd>
+
+      <dt>Notes</dt>
+      <dd>
+        {% if access_request.notes %}
+          <p class="notes">{{ access_request.notes }}</p>
+        {% else %}
+          <span class="muted">None.</span>
+        {% endif %}
+      </dd>
+
+      <dt>Record</dt>
+      <dd class="muted">
+        Created {{ access_request.created_at|date:"j M Y, H:i" }}<br>
+        Last updated {{ access_request.updated_at|date:"j M Y, H:i" }}
+      </dd>
+    </dl>
+  </div>
+{% endblock %}
