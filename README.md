@@ -7,13 +7,9 @@ A Django application for tracking **Joiner / Mover / Leaver (JML)** access reque
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
 ![Status](https://img.shields.io/badge/status-in%20development-orange)
 
-**Live demo:** `https://jmltracker.dueback.com` — sign in with the demo credentials below.
-
-** Requester:   requester.demo
-                demopassword1234
-
-** Approver:    approver.demo
-                demopassword1234
+> **Demo not yet deployed.** A public instance with seeded data and shared demo
+> logins is planned once the core is complete; the link will be added here when
+> it is actually live. Until then, see [Running locally](#running-locally).
 
 ---
 
@@ -75,7 +71,9 @@ The application uses function-based views, ModelForms and sessions throughout �
 
 ### One codebase, many environments
 
-Nothing environment-specific is hardcoded. `DEBUG`, `SECRET_KEY`, `ALLOWED_HOSTS`, `CSRF_TRUSTED_ORIGINS` and the database all read from environment variables with safe local defaults. `DATABASE_URL` is the single database lever, so moving between a local Postgres, the server's Postgres and a hosted Postgres is a configuration change and nothing more. Secrets never enter version control: `.env` is gitignored, and `.env.example` documents every variable with no values.
+Nothing environment-specific is hardcoded. `DEBUG`, `SECRET_KEY`, `ALLOWED_HOSTS`, `CSRF_TRUSTED_ORIGINS` and the database all read from environment variables. Where a default would be dangerous there is none: `SECRET_KEY` and `DATABASE_URL` are required, and an unset value raises `ImproperlyConfigured` and stops the process at startup. That is deliberate — a silent fallback to SQLite would let the application run locally on an engine it will never use in production, which is precisely how engine-specific bugs stay hidden until deployment day. `DEBUG` defaults to `False`, so forgetting it fails closed rather than open.
+
+`DATABASE_URL` is the single database lever, so moving between a local Postgres, the server's Postgres and a hosted Postgres is a configuration change and nothing more. Secrets never enter version control: `.env` is gitignored, and `.env.example` documents every variable with no values.
 
 ---
 
@@ -84,7 +82,7 @@ Nothing environment-specific is hardcoded. `DEBUG`, `SECRET_KEY`, `ALLOWED_HOSTS
 Three related tables:
 
 - **System** — an application or entitlement (`name`, `category`, `is_active`).
-- **Employee** — the person in the lifecycle (`name`, unique `email`, `department`, `job_title`, `start_date`, `status`).
+- **Employee** — the person in the lifecycle (`first_name`, `last_name`, unique `email`, `department`, `job_title`, `start_date`, `status`).
 - **AccessRequest** — a foreign key to Employee (protected on delete, so history is preserved), a many-to-many to System, a `request_type` (join / move / leave), `requested_date`, `status`, `requested_by` and `approver`, `decided_at`, `notes` and timestamps.
 
 ### Status lifecycle
@@ -154,12 +152,16 @@ Production runs on Ubuntu with Gunicorn under systemd, behind an Nginx reverse p
 
 ## Demo
 
-The public demo is seeded with synthetic data (invented names on `example.com` addresses) and reset on a schedule, so you can create, edit and delete freely while looking around.
+*Not yet deployed — this describes the demo as it will be, and the credentials below work against a local checkout today.*
+
+The demo is seeded with synthetic data (invented names on `example.com` addresses) and reset on a schedule, so you can create, edit and delete freely while looking around.
 
 | Role | Username | Password |
 | --- | --- | --- |
 | Requester | `requester.demo` | `demopassword1234` |
 | Approver | `approver.demo` | `demopassword1234` |
+
+These two accounts are created by `python manage.py seed_data`. They are ordinary users with no staff or superuser rights, so the Django admin stays closed to them. Their password is read from `DEMO_PASSWORD` rather than hardcoded: leave it unset and the accounts get unusable passwords and cannot be logged into at all, which is the default for any checkout that is not the public demo.
 
 Sign in as the requester to raise a request, then sign in as the approver to decide it — that walks the whole flow. Two-factor authentication is switched off on the demo: the accounts are shared, so a second factor enrolled by one visitor would lock out the next.
 
@@ -170,8 +172,8 @@ Sign in as the requester to raise a request, then sign in as the approver to dec
 The core is under active development against a fixed build order. Complete and in progress:
 
 - [x] Environment-driven project scaffold, three-table data model, admin
-- [ ] PostgreSQL across all environments
-- [ ] Seed data
+- [x] PostgreSQL across all environments
+- [x] Seed data
 - [ ] Read paths (list, detail)
 - [ ] Write paths (create, edit, withdraw)
 - [ ] Guided create wizard
