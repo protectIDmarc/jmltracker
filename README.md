@@ -175,7 +175,7 @@ The core is under active development against a fixed build order. Complete and i
 - [x] PostgreSQL across all environments
 - [x] Seed data
 - [x] Read paths (list, detail)
-- [ ] Write paths (create, edit, withdraw)
+- [x] Write paths (create, edit, withdraw)
 - [ ] Guided create wizard
 - [ ] Dashboard and approval guards
 - [ ] Test suite

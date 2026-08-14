@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% comment %}
+Shared confirmation step for the state-changing actions. They are POST-only:
+a status change must never happen because something followed a link, and a
+GET here only ever renders this page.
+{% endcomment %}
+
+{% block title %}{{ heading }} — JML Access Request Tracker{% endblock %}
+
+{% block content %}
+  <h1>{{ heading }}</h1>
+  <p class="subtitle">
+    <a href="{% url 'request_detail' access_request.pk %}">&larr; Back to request</a>
+  </p>
+
+  <div class="card form-card">
+    <p>{{ body }}</p>
+
+    <dl class="detail-grid confirm-summary">
+      <dt>Employee</dt>
+      <dd>{{ access_request.employee.full_name }}</dd>
+      <dt>Type</dt>
+      <dd>{{ access_request.get_request_type_display }}</dd>
+      <dt>Current status</dt>
+      <dd>
+        <span class="badge status-{{ access_request.status }}">
+          {{ access_request.get_status_display }}
+        </span>
+      </dd>
+    </dl>
+
+    <form method="post" action="{% url action_url access_request.pk %}">
+      {% csrf_token %}
+      <div class="form-actions">
+        <button type="submit" class="{% if destructive %}destructive{% else %}primary{% endif %}">
+          {{ submit_label }}
+        </button>
+        <a class="button" href="{% url 'request_detail' access_request.pk %}">Cancel</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

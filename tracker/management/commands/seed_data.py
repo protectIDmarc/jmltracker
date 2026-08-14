@@ -266,9 +266,17 @@ class Command(BaseCommand):
                 requested_by=requester,
                 notes=notes,
             )
-            if status in DECIDED:
-                # Every decision stamps both the approver and the timestamp.
+            # An approver is nominated as soon as a request leaves draft, not
+            # only once it is decided. The dashboard's "awaiting my approval"
+            # panel filters pending requests by approver, so a pending request
+            # with no approver would be invisible to the very person who has
+            # to act on it. Drafts have none yet — nominating one is what the
+            # submit step requires.
+            if status != AccessRequest.Status.DRAFT:
                 request.approver = approver
+
+            if status in DECIDED:
+                # A decision additionally stamps when it was taken.
                 request.decided_at = timezone.now() - datetime.timedelta(
                     days=max(days_ago - 1, 0)
                 )

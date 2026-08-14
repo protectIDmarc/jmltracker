@@ -255,4 +255,117 @@ td a { font-weight: 500; }
     color: var(--text);
 }
 
-.errorlist { color: var(--status-rejected); font-size: 0.875rem; padding-left: 1rem; }
+.errorlist { color: var(--status-rejected); font-size: 0.875rem; padding-left: 1rem; margin: 0.35rem 0 0; }
+
+/* --- Page heading with an action --- */
+
+.page-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.page-head > div { margin-right: auto; }
+
+/* --- Messages --- */
+
+.messages { list-style: none; margin: 0 0 1.5rem; padding: 0; }
+
+.message {
+    padding: 0.6rem 0.9rem;
+    border: 1px solid var(--border);
+    border-left-width: 3px;
+    border-radius: 0.375rem;
+    background: var(--surface);
+    margin-bottom: 0.5rem;
+    font-size: 0.9375rem;
+}
+
+.message.success { border-left-color: var(--status-approved); }
+.message.error { border-left-color: var(--status-rejected); }
+.message.warning { border-left-color: var(--status-pending); }
+.message.info { border-left-color: var(--status-completed); }
+
+/* --- Forms --- */
+
+.form-card { padding: 1.25rem; }
+
+.field { margin-bottom: 1.15rem; }
+
+.field > label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-bottom: 0.3rem;
+}
+
+.field .required { color: var(--status-rejected); }
+
+.field .help { margin: 0.3rem 0 0; font-size: 0.8125rem; }
+
+.field input[type="text"],
+.field input[type="date"],
+.field input[type="number"],
+.field select,
+.field textarea {
+    width: 100%;
+    font: inherit;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 0.375rem;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.field textarea { resize: vertical; }
+
+/* Checkbox list for the systems multi-select. */
+.field ul {
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 0.375rem;
+    background: var(--bg);
+    max-height: 15rem;
+    overflow-y: auto;
+    columns: 2;
+    column-gap: 1.5rem;
+}
+
+.field ul li { break-inside: avoid; }
+
+.field ul label {
+    font-weight: normal;
+    font-size: 0.9375rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.15rem 0;
+}
+
+@media (max-width: 34rem) {
+    .field ul { columns: 1; }
+}
+
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-items: center;
+}
+
+.actions-bar { margin-bottom: 1.25rem; }
+
+button.destructive, .button.destructive {
+    color: var(--status-rejected);
+    border-color: var(--status-rejected);
+}
+
+button.destructive:hover, .button.destructive:hover {
+    background: var(--status-rejected);
+    color: var(--surface);
+}
+
+.confirm-summary { padding: 1rem 0; }

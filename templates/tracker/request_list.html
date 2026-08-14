@@ -3,10 +3,15 @@
 {% block title %}Access requests — JML Access Request Tracker{% endblock %}
 
 {% block content %}
-  <h1>Access requests</h1>
-  <p class="subtitle">
-    {{ total_count }} request{{ total_count|pluralize }} on record.
-  </p>
+  <div class="page-head">
+    <div>
+      <h1>Access requests</h1>
+      <p class="subtitle">
+        {{ total_count }} request{{ total_count|pluralize }} on record.
+      </p>
+    </div>
+    <a class="button primary" href="{% url 'request_create' %}">New request</a>
+  </div>
 
   <div class="card">
     {% if page_obj.object_list %}
