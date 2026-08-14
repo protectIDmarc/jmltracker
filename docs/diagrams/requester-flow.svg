@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="724" viewBox="0 0 720 724" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
+  <defs>
+    <filter id="s" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#0f172a" flood-opacity="0.12"/></filter>
+    <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 2L8 5L2 8Z" fill="#64748b"/></marker>
+  </defs>
+
+  <text x="24" y="26" font-size="16" font-weight="700" fill="#0f172a">Requester flow</text>
+  <text x="24" y="44" font-size="12" fill="#64748b">Nothing is saved until the final confirm, which commits atomically.</text>
+
+  <!-- 1 New request -->
+  <g filter="url(#s)"><rect x="240" y="60" width="240" height="52" rx="10" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.4"/></g>
+  <text x="360" y="82" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">New request</text>
+  <text x="360" y="99" text-anchor="middle" font-size="11.5" fill="#64748b">signed in · requester</text>
+  <line x1="360" y1="112" x2="360" y2="150" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
+
+  <!-- wizard container -->
+  <rect x="196" y="134" width="328" height="322" rx="12" fill="none" stroke="#cbd5e1" stroke-width="1.2" stroke-dasharray="6 4"/>
+  <text x="210" y="150" font-size="11.5" font-weight="600" fill="#94a3b8">wizard · session-based</text>
+
+  <!-- 2 Step 1 -->
+  <g filter="url(#s)"><rect x="240" y="162" width="240" height="52" rx="10" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.4"/></g>
+  <text x="360" y="184" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">Step 1 · Employee</text>
+  <text x="360" y="201" text-anchor="middle" font-size="11.5" fill="#64748b">pick or create</text>
+  <line x1="360" y1="214" x2="360" y2="238" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
+
+  <!-- 3 Step 2 -->
+  <g filter="url(#s)"><rect x="240" y="238" width="240" height="52" rx="10" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.4"/></g>
+  <text x="360" y="260" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">Step 2 · Type + date</text>
+  <text x="360" y="277" text-anchor="middle" font-size="11.5" fill="#64748b">join / move / leave</text>
+  <line x1="360" y1="290" x2="360" y2="314" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
+
+  <!-- 4 Step 3 -->
+  <g filter="url(#s)"><rect x="240" y="314" width="240" height="52" rx="10" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.4"/></g>
+  <text x="360" y="336" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">Step 3 · Systems</text>
+  <text x="360" y="353" text-anchor="middle" font-size="11.5" fill="#64748b">grant / revoke / affected</text>
+  <line x1="360" y1="366" x2="360" y2="390" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
+
+  <!-- 5 Step 4 -->
+  <g filter="url(#s)"><rect x="240" y="390" width="240" height="52" rx="10" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.4"/></g>
+  <text x="360" y="412" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">Step 4 · Review</text>
+  <text x="360" y="429" text-anchor="middle" font-size="11.5" fill="#64748b">choose approver</text>
+
+  <!-- back note -->
+  <line x1="524" y1="290" x2="542" y2="290" stroke="#cbd5e1" stroke-width="1.2" stroke-dasharray="4 3"/>
+  <text x="546" y="286" font-size="11" fill="#64748b">&#8592; back keeps</text>
+  <text x="546" y="300" font-size="11" fill="#64748b">session answers</text>
+
+  <line x1="360" y1="442" x2="360" y2="482" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
+
+  <!-- 6 Commit -->
+  <g filter="url(#s)"><rect x="240" y="482" width="240" height="52" rx="10" fill="#dcfce7" stroke="#4ade80" stroke-width="1.4"/></g>
+  <text x="360" y="504" text-anchor="middle" font-size="14" font-weight="600" fill="#166534">Confirm · atomic commit</text>
+  <text x="360" y="521" text-anchor="middle" font-size="11.5" fill="#15803d">both rows or neither</text>
+  <line x1="360" y1="534" x2="360" y2="558" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
+
+  <!-- 7 Pending -->
+  <g filter="url(#s)"><rect x="240" y="558" width="240" height="52" rx="10" fill="#dcfce7" stroke="#4ade80" stroke-width="1.4"/></g>
+  <text x="360" y="580" text-anchor="middle" font-size="14" font-weight="600" fill="#166534">Status: pending</text>
+  <text x="360" y="597" text-anchor="middle" font-size="11.5" fill="#15803d">awaits approver</text>
+
+  <!-- split to edit / withdraw -->
+  <line x1="360" y1="610" x2="360" y2="624" stroke="#94a3b8" stroke-width="1.6"/>
+  <line x1="225" y1="624" x2="495" y2="624" stroke="#94a3b8" stroke-width="1.6"/>
+  <line x1="225" y1="624" x2="225" y2="640" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
+  <line x1="495" y1="624" x2="495" y2="640" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
+
+  <!-- Edit -->
+  <g filter="url(#s)"><rect x="110" y="640" width="230" height="52" rx="10" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.4"/></g>
+  <text x="225" y="662" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">Edit</text>
+  <text x="225" y="679" text-anchor="middle" font-size="11.5" fill="#64748b">draft or pending</text>
+
+  <!-- Withdraw -->
+  <g filter="url(#s)"><rect x="380" y="640" width="230" height="52" rx="10" fill="#fee2e2" stroke="#f87171" stroke-width="1.4"/></g>
+  <text x="495" y="662" text-anchor="middle" font-size="14" font-weight="600" fill="#991b1b">Withdraw</text>
+  <text x="495" y="679" text-anchor="middle" font-size="11.5" fill="#b91c1c">&#8594; cancelled</text>
+</svg>
