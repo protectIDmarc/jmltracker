@@ -7,9 +7,8 @@ A Django application for tracking **Joiner / Mover / Leaver (JML)** access reque
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
 ![Status](https://img.shields.io/badge/status-in%20development-orange)
 
-> **Demo not yet deployed.** A public instance with seeded data and shared demo
-> logins is planned once the core is complete; the link will be added here when
-> it is actually live. Until then, see [Running locally](#running-locally).
+**Live demo: [jmltracker.dueback.app](https://jmltracker.dueback.app)** — sign in
+with the demo credentials in the [Demo](#demo) section below.
 
 ---
 
@@ -152,8 +151,6 @@ Production runs on Ubuntu with Gunicorn under systemd, behind an Nginx reverse p
 
 ## Demo
 
-*Not yet deployed — this describes the demo as it will be, and the credentials below work against a local checkout today.*
-
 The demo is seeded with synthetic data (invented names on `example.com` addresses) and reset on a schedule, so you can create, edit and delete freely while looking around.
 
 | Role | Username | Password |
@@ -179,7 +176,7 @@ The core is under active development against a fixed build order. Complete and i
 - [x] Guided create wizard
 - [x] Dashboard and approval guards
 - [x] Test suite
-- [ ] Public deployment (Gunicorn / Nginx / TLS)
+- [x] Public deployment (Gunicorn / Nginx / TLS)
 - [ ] Demo hardening and seeded demo accounts
 - [ ] Optional two-factor authentication
 
