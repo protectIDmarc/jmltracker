@@ -178,7 +178,7 @@ The core is under active development against a fixed build order. Complete and i
 - [x] Write paths (create, edit, withdraw)
 - [x] Guided create wizard
 - [x] Dashboard and approval guards
-- [ ] Test suite
+- [x] Test suite
 - [ ] Public deployment (Gunicorn / Nginx / TLS)
 - [ ] Demo hardening and seeded demo accounts
 - [ ] Optional two-factor authentication
