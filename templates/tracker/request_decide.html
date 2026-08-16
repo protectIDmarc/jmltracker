@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% comment %}
+Approve and reject are two buttons in one POST form, distinguished by the
+`decision` value. Both are POST: a decision must never happen because
+something followed a link, and a GET here only ever renders this page.
+{% endcomment %}
+
+{% block title %}Decide request — JML Access Request Tracker{% endblock %}
+
+{% block content %}
+  <h1>Decide this request</h1>
+  <p class="subtitle">
+    <a href="{% url 'request_detail' access_request.pk %}">&larr; Back to request</a>
+  </p>
+
+  <div class="card form-card">
+    <dl class="detail-grid confirm-summary">
+      <dt>Employee</dt>
+      <dd>
+        {{ access_request.employee.full_name }}
+        <div class="muted">
+          {{ access_request.employee.email }} · {{ access_request.employee.department }}
+        </div>
+      </dd>
+
+      <dt>Request type</dt>
+      <dd>{{ access_request.get_request_type_display }}</dd>
+
+      <dt>Requested date</dt>
+      <dd>{{ access_request.requested_date|date:"j F Y" }}</dd>
+
+      <dt>Raised by</dt>
+      <dd>{{ access_request.requested_by.get_username }}</dd>
+
+      <dt>
+        {% if access_request.request_type == 'joiner' %}Systems to grant
+        {% elif access_request.request_type == 'leaver' %}Systems to revoke
+        {% else %}Systems affected{% endif %}
+      </dt>
+      <dd>
+        <ul class="system-list">
+          {% for system in access_request.systems.all %}
+            <li class="{% if not system.is_active %}inactive{% endif %}">
+              {{ system.name }}{% if not system.is_active %} (retired){% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </dd>
+
+      <dt>Notes</dt>
+      <dd>
+        {% if access_request.notes %}
+          <p class="notes">{{ access_request.notes }}</p>
+        {% else %}
+          <span class="muted">None.</span>
+        {% endif %}
+      </dd>
+    </dl>
+
+    <hr class="rule">
+
+    <p class="muted help">
+      Your decision is recorded against your name with the time it was taken.
+      It cannot be changed afterwards.
+    </p>
+
+    <form method="post" action="{% url 'request_decide' access_request.pk %}">
+      {% csrf_token %}
+      <div class="form-actions">
+        <button type="submit" name="decision" value="approve" class="primary">Approve</button>
+        <button type="submit" name="decision" value="reject" class="destructive">Reject</button>
+        <a class="button" href="{% url 'request_detail' access_request.pk %}">Cancel</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

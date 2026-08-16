@@ -425,3 +425,62 @@ hr.rule {
 
 /* Radio lists (request type, employee mode) read better in one column. */
 .field ul.radio-single { columns: 1; }
+
+/* --- Dashboard: KPI row of stat tiles --- */
+
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat { padding: 1.1rem 1.25rem; }
+
+.stat-label {
+    margin: 0 0 0.35rem;
+    font-size: 0.8125rem;
+    color: var(--muted);
+}
+
+.stat-value {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.1;
+    /* Proportional figures deliberately: tabular-nums gives every digit the
+       width of a zero, which reads loose at display sizes. Tabular is for
+       columns of numbers that must align, not for a standalone value. */
+}
+
+/* The one number the view leads with. Exactly one per page. */
+.stat.hero { grid-column: span 2; }
+.stat.hero .stat-value { font-size: 3rem; }
+
+@media (max-width: 34rem) {
+    .stat.hero { grid-column: span 1; }
+    .stat.hero .stat-value { font-size: 2.5rem; }
+}
+
+.stat .muted { font-size: 0.8125rem; margin: 0.35rem 0 0; }
+
+.section-heading {
+    font-size: 1.05rem;
+    margin: 0 0 0.75rem;
+}
+
+.card + .section-heading { margin-top: 2rem; }
+
+/* Screen-reader-only: for a column header that exists structurally but has no
+   visible text (an actions column). */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}

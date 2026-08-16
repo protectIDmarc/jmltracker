@@ -8,15 +8,23 @@
     <a href="{% url 'request_list' %}">&larr; All requests</a>
   </p>
 
-  {% if may_modify %}
-    {# Shown only to the author, and only before a decision. The views enforce
-       the same rule - hiding a button is not access control. #}
+  {# Every one of these is re-checked in the view. Hiding a button is not
+     access control - it only avoids offering an action that would be refused. #}
+  {% if may_modify or may_decide or may_complete %}
     <div class="form-actions actions-bar">
-      <a class="button" href="{% url 'request_edit' access_request.pk %}">Edit</a>
-      {% if access_request.status == 'draft' %}
-        <a class="button primary" href="{% url 'request_submit' access_request.pk %}">Submit for approval</a>
+      {% if may_modify %}
+        <a class="button" href="{% url 'request_edit' access_request.pk %}">Edit</a>
+        {% if access_request.status == 'draft' %}
+          <a class="button primary" href="{% url 'request_submit' access_request.pk %}">Submit for approval</a>
+        {% endif %}
+        <a class="button destructive" href="{% url 'request_withdraw' access_request.pk %}">Withdraw</a>
       {% endif %}
-      <a class="button destructive" href="{% url 'request_withdraw' access_request.pk %}">Withdraw</a>
+      {% if may_decide %}
+        <a class="button primary" href="{% url 'request_decide' access_request.pk %}">Review and decide</a>
+      {% endif %}
+      {% if may_complete %}
+        <a class="button primary" href="{% url 'request_complete' access_request.pk %}">Mark completed</a>
+      {% endif %}
     </div>
   {% endif %}
 

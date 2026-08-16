@@ -3,9 +3,9 @@ from django.urls import path
 from . import views, wizard
 
 urlpatterns = [
-    # Root is a landing slot: it redirects to the list today and becomes the
-    # dashboard at M6, so no URL below has to move.
-    path("", views.home, name="home"),
+    # The dashboard took over the root slot at M6, exactly as the placeholder
+    # there was reserved for — no other URL had to move.
+    path("", views.dashboard, name="dashboard"),
 
     path("requests/", views.request_list, name="request_list"),
     path("requests/new/", views.request_create, name="request_create"),
@@ -22,4 +22,6 @@ urlpatterns = [
     path("requests/<int:pk>/edit/", views.request_edit, name="request_edit"),
     path("requests/<int:pk>/submit/", views.request_submit, name="request_submit"),
     path("requests/<int:pk>/withdraw/", views.request_withdraw, name="request_withdraw"),
+    path("requests/<int:pk>/decide/", views.request_decide, name="request_decide"),
+    path("requests/<int:pk>/complete/", views.request_complete, name="request_complete"),
 ]

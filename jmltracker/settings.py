@@ -101,10 +101,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Every application view is behind @login_required; the login page and static
 # files are the only anonymous routes.
 LOGIN_URL = "login"
-# Points at the placeholder home view until the dashboard exists; M6 repoints
-# this to "dashboard". Naming a route that does not exist yet would 500 on
-# every successful login.
-LOGIN_REDIRECT_URL = "home"
+LOGIN_REDIRECT_URL = "dashboard"
 LOGOUT_REDIRECT_URL = "login"
 
 AUTH_PASSWORD_VALIDATORS = [

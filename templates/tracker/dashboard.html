@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% comment %}
+A KPI row of stat tiles, not a chart: these are headline counts, and a
+one-bar-per-status bar chart would add ink without adding meaning. One hero
+figure leads the view; the rest are secondary tiles.
+{% endcomment %}
+
+{% block title %}Dashboard — JML Access Request Tracker{% endblock %}
+
+{% block content %}
+  <div class="page-head">
+    <div>
+      <h1>Dashboard</h1>
+      <p class="subtitle">Access requests across the organisation.</p>
+    </div>
+    <div class="form-actions">
+      <a class="button primary" href="{% url 'wizard_start' %}">New request</a>
+    </div>
+  </div>
+
+  <div class="kpi-row">
+    {# The one number the view leads with. #}
+    <div class="card stat hero">
+      <p class="stat-label">Open requests</p>
+      <p class="stat-value">{{ stats.open }}</p>
+      <p class="muted">Not yet completed, rejected or cancelled</p>
+    </div>
+
+    <div class="card stat">
+      <p class="stat-label">Awaiting a decision</p>
+      <p class="stat-value">{{ stats.pending }}</p>
+    </div>
+
+    <div class="card stat">
+      <p class="stat-label">Approved, not provisioned</p>
+      <p class="stat-value">{{ stats.approved }}</p>
+    </div>
+
+    <div class="card stat">
+      <p class="stat-label">Completed</p>
+      <p class="stat-value">{{ stats.completed }}</p>
+    </div>
+  </div>
+
+  <h2 class="section-heading">Awaiting my approval</h2>
+  <div class="card">
+    {% if awaiting %}
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Employee</th>
+              <th scope="col">Type</th>
+              <th scope="col">Systems</th>
+              <th scope="col">Requested</th>
+              <th scope="col"><span class="visually-hidden">Action</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for req in awaiting %}
+              <tr>
+                <td>
+                  <a href="{% url 'request_detail' req.pk %}">{{ req.employee }}</a>
+                  <div class="muted">{{ req.employee.department }}</div>
+                </td>
+                <td>{{ req.get_request_type_display }}</td>
+                <td class="muted">{{ req.systems.all|join:", "|truncatechars:36 }}</td>
+                <td>{{ req.requested_date|date:"j M Y" }}</td>
+                <td><a class="button" href="{% url 'request_decide' req.pk %}">Review</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="empty">Nothing is waiting on you.</p>
+    {% endif %}
+  </div>
+
+  <h2 class="section-heading">My open requests</h2>
+  <div class="card">
+    {% if mine %}
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Employee</th>
+              <th scope="col">Type</th>
+              <th scope="col">Approver</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for req in mine %}
+              <tr>
+                <td><a href="{% url 'request_detail' req.pk %}">{{ req.employee }}</a></td>
+                <td>{{ req.get_request_type_display }}</td>
+                <td class="muted">
+                  {% if req.approver %}{{ req.approver.get_username }}
+                  {% else %}Not nominated{% endif %}
+                </td>
+                {# Status carries a text label, never colour alone. #}
+                <td><span class="badge status-{{ req.status }}">{{ req.get_status_display }}</span></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="empty">You have no open requests.</p>
+    {% endif %}
+  </div>
+{% endblock %}

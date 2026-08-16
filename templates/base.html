@@ -10,9 +10,10 @@
   {% if user.is_authenticated %}
     <header class="site-header">
       <div class="inner">
-        <a class="brand" href="{% url 'home' %}">JML Access Request Tracker</a>
+        <a class="brand" href="{% url 'dashboard' %}">JML Access Request Tracker</a>
         <nav>
-          {# Only routes that exist are linked. The dashboard arrives at M6. #}
+          <a href="{% url 'dashboard' %}"
+             class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Dashboard</a>
           <a href="{% url 'request_list' %}"
              class="{% if request.resolver_match.url_name == 'request_list' %}active{% endif %}">Requests</a>
           {# The wizard is the normal way in: it commits straight to pending.
