@@ -5,7 +5,7 @@ A Django application for tracking **Joiner / Mover / Leaver (JML)** access reque
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
 ![Django](https://img.shields.io/badge/Django-5.2%20LTS-092E20?logo=django&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
-![Status](https://img.shields.io/badge/status-in%20development-orange)
+![Status](https://img.shields.io/badge/status-live-brightgreen)
 
 **Live demo: [jmltracker.dueback.app](https://jmltracker.dueback.app)** — sign in
 with the demo credentials in the [Demo](#demo) section below.
@@ -32,7 +32,7 @@ It is a deliberately focused build: clean relational CRUD over three tables, a g
 - **Audit-ready records** — each decision stamps the approver and the exact decision time.
 - **Dashboard** — request counts by status plus an "awaiting my approval" panel for the signed-in user.
 - **Gated by default** — every page requires login; there is no anonymous view of the data.
-- **Optional two-factor authentication** — an authenticator-app second factor that is entirely configuration-driven and ships switched off.
+- **Optional two-factor authentication** *(designed, not yet built — see [Project status](#project-status))* — an authenticator-app second factor, entirely configuration-driven, to ship switched off.
 
 ---
 
@@ -103,7 +103,7 @@ draft → pending → approved | rejected → completed | cancelled
 - **Authentication** — Django session authentication with the standard login and logout views.
 - **Access control** — every application view requires login. The login page is the only public page, and it carries nothing credential-shaped: demo credentials live only in this README, never on the deployed site.
 - **Approval integrity** — self-approval and double-approval are refused in the view layer, and the decisive status check runs inside the database transaction so a race cannot slip two approvals through.
-- **Optional MFA** — an `django-otp` TOTP second factor (authenticator app), chosen over SMS to avoid SIM-swap exposure and external dependencies. It is driven by four environment switches (`MFA_ENABLED`, `MFA_ENFORCED_ROLES`, `MFA_EXEMPT_USERS`, `MFA_GRACE_LOGINS`) and is genuinely inert when disabled — the enrolment routes are not registered and login stays a single step. When enabled, enrolment presents a QR code and one-time recovery codes; verification attempts are throttled per device, while brute-force protection at the network edge is handled by `fail2ban`.
+- **Optional MFA** *(planned — the design below is settled, the code is not written yet)* — a `django-otp` TOTP second factor (authenticator app), chosen over SMS to avoid SIM-swap exposure and external dependencies. It is driven by four environment switches (`MFA_ENABLED`, `MFA_ENFORCED_ROLES`, `MFA_EXEMPT_USERS`, `MFA_GRACE_LOGINS`) and is genuinely inert when disabled — the enrolment routes are not registered and login stays a single step. When enabled, enrolment presents a QR code and one-time recovery codes; verification attempts are throttled per device, while brute-force protection at the network edge is handled by `fail2ban`.
 
 ---
 
@@ -126,11 +126,18 @@ cp .env.example .env               # then set SECRET_KEY and DATABASE_URL
 python manage.py migrate
 python manage.py createsuperuser
 
-# 5. Run
+# 5. Sample data (optional, but the dashboard is empty without it)
+python manage.py seed_data
+
+# 6. Run
 python manage.py runserver
 ```
 
-The app expects PostgreSQL via `DATABASE_URL` (for example `postgres://user:pass@localhost:5432/jml`). Point that variable at a local Postgres instance before running the migrations.
+The app expects PostgreSQL via `DATABASE_URL` (for example `postgres://user:pass@localhost:5432/jml`). Point that variable at a local Postgres instance before running the migrations. The database role needs `CREATEDB` for the test suite, which builds and drops a throwaway database.
+
+`seed_data` is idempotent, so it is safe to re-run; `seed_data --clear` wipes and rebuilds. The two demo accounts it creates have unusable passwords unless `DEMO_PASSWORD` is set, so a fresh clone cannot be logged into as them by accident.
+
+Run the tests with `python manage.py test tracker`.
 
 ---
 
@@ -177,7 +184,7 @@ The core is under active development against a fixed build order. Complete and i
 - [x] Dashboard and approval guards
 - [x] Test suite
 - [x] Public deployment (Gunicorn / Nginx / TLS)
-- [ ] Demo hardening and seeded demo accounts
+- [x] Demo hardening and seeded demo accounts
 - [ ] Optional two-factor authentication
 
 ### Beyond the core

@@ -48,6 +48,20 @@ body {
 
 a { color: var(--accent); }
 
+/* --- Demo banner --- */
+
+.demo-banner {
+    margin: 0;
+    padding: 0.55rem 1rem;
+    text-align: center;
+    font-size: 0.875rem;
+    background: var(--surface);
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+}
+
+.demo-banner strong { color: var(--text); }
+
 /* --- Layout --- */
 
 .site-header {

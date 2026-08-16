@@ -140,8 +140,20 @@ class Command(BaseCommand):
             help="Username to record as approver (created if absent).",
         )
 
+    def _say(self, message, style=None):
+        """Respect --verbosity.
+
+        Management commands are called programmatically as well as typed, and
+        a command that prints unconditionally makes its caller's output - or a
+        test run - unreadable.
+        """
+        if self.verbosity >= 1:
+            self.stdout.write(style(message) if style else message)
+
     @transaction.atomic
     def handle(self, *args, **options):
+        self.verbosity = options["verbosity"]
+
         if options["clear"]:
             self._clear()
 
@@ -152,12 +164,13 @@ class Command(BaseCommand):
         employees = self._seed_employees()
         created = self._seed_requests(systems, employees, requester, approver)
 
-        self.stdout.write(self.style.SUCCESS(
+        self._say(
             f"Seeded: {System.objects.count()} systems, "
             f"{Employee.objects.count()} employees, "
             f"{AccessRequest.objects.count()} requests "
-            f"({created} created this run)."
-        ))
+            f"({created} created this run).",
+            style=self.style.SUCCESS,
+        )
 
     def _clear(self):
         # Requests first: employees are PROTECTed by them, so the reverse order
@@ -170,7 +183,7 @@ class Command(BaseCommand):
         AccessRequest.objects.all().delete()
         Employee.objects.all().delete()
         System.objects.all().delete()
-        self.stdout.write(
+        self._say(
             f"Cleared {counts[0]} requests, {counts[1]} employees, {counts[2]} systems."
         )
 
@@ -204,7 +217,7 @@ class Command(BaseCommand):
             state = "no usable password (DEMO_PASSWORD unset)"
         user.save(update_fields=["password"])
 
-        self.stdout.write(f"{'Created' if created else 'Updated'} {username} — {state}.")
+        self._say(f"{'Created' if created else 'Updated'} {username} — {state}.")
         return user
 
     def _seed_systems(self):

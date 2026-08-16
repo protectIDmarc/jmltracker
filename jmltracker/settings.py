@@ -73,6 +73,10 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                # Puts DEMO_MODE in front of every template, including the
+                # login page, which contrib.auth renders with no project view
+                # of its own to add it.
+                "tracker.context_processors.demo_mode",
             ],
         },
     },

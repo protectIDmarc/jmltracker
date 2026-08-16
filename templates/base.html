@@ -7,6 +7,16 @@
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
 </head>
 <body>
+  {% if demo_mode %}
+    {# Shown to everyone, signed in or not: a visitor should know the data is
+       synthetic and disposable before they start changing it. #}
+    <p class="demo-banner">
+      <strong>Demonstration site.</strong> All data is invented, the accounts are
+      shared, and everything resets on a schedule — create, edit and withdraw
+      freely.
+    </p>
+  {% endif %}
+
   {% if user.is_authenticated %}
     <header class="site-header">
       <div class="inner">
