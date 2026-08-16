@@ -1,0 +1,13 @@
+{% extends "tracker/wizard/_wizard_base.html" %}
+
+{% block wizard_content %}
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {# The field's own label carries the framing: grant / revoke / affected. #}
+    {% include "tracker/_form_fields.html" with form=form %}
+    <div class="form-actions">
+      <button type="submit" class="primary">Continue</button>
+      <a class="button" href="{% url 'wizard_details' %}">Back</a>
+    </div>
+  </form>
+{% endblock %}

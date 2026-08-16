@@ -10,7 +10,12 @@
         {{ total_count }} request{{ total_count|pluralize }} on record.
       </p>
     </div>
-    <a class="button primary" href="{% url 'request_create' %}">New request</a>
+    <div class="form-actions">
+      {# Wizard first: it is the normal origin of a submitted request. The
+         plain form is the save-and-finish-later path. #}
+      <a class="button primary" href="{% url 'wizard_start' %}">New request</a>
+      <a class="button" href="{% url 'request_create' %}">Quick draft</a>
+    </div>
   </div>
 
   <div class="card">

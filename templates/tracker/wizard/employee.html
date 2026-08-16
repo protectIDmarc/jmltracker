@@ -1,0 +1,17 @@
+{% extends "tracker/wizard/_wizard_base.html" %}
+
+{% block wizard_content %}
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% include "tracker/_form_fields.html" with form=form %}
+    <p class="muted help">
+      Choose an existing employee, or fill in the new-employee details. Only the
+      set matching your choice is required — a new employee is created when you
+      confirm at the end, not now.
+    </p>
+    <div class="form-actions">
+      <button type="submit" class="primary">Continue</button>
+      <a class="button" href="{% url 'request_list' %}">Back to list</a>
+    </div>
+  </form>
+{% endblock %}

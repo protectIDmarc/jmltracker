@@ -1,0 +1,54 @@
+{% extends "tracker/wizard/_wizard_base.html" %}
+
+{% block wizard_content %}
+  <dl class="detail-grid confirm-summary">
+    <dt>Employee</dt>
+    <dd>
+      {% if employee %}
+        {{ employee.full_name }}
+        <div class="muted">{{ employee.email }} · {{ employee.department }}</div>
+      {% else %}
+        {{ new_employee.first_name }} {{ new_employee.last_name }}
+        <div class="muted">
+          {{ new_employee.email }} · {{ new_employee.department }} ·
+          {{ new_employee.job_title }}
+        </div>
+        <div class="muted"><em>Will be created when you confirm.</em></div>
+      {% endif %}
+    </dd>
+
+    <dt>Request type</dt>
+    <dd>{{ request_type_label }}</dd>
+
+    <dt>Requested date</dt>
+    <dd>{{ state.requested_date }}</dd>
+
+    <dt>{{ systems_label }}</dt>
+    <dd>
+      <ul class="system-list">
+        {% for system in systems %}<li>{{ system.name }}</li>{% endfor %}
+      </ul>
+    </dd>
+  </dl>
+
+  <p class="muted help">
+    <a href="{% url 'wizard_employee' %}">Change employee</a> ·
+    <a href="{% url 'wizard_details' %}">Change type or date</a> ·
+    <a href="{% url 'wizard_systems' %}">Change systems</a>
+  </p>
+
+  <hr class="rule">
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% include "tracker/_form_fields.html" with form=form %}
+    <p class="muted help">
+      Confirming submits the request for approval. The employee and the request
+      are saved together — both, or neither.
+    </p>
+    <div class="form-actions">
+      <button type="submit" class="primary">Confirm and submit</button>
+      <a class="button" href="{% url 'wizard_systems' %}">Back</a>
+    </div>
+  </form>
+{% endblock %}

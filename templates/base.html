@@ -15,8 +15,10 @@
           {# Only routes that exist are linked. The dashboard arrives at M6. #}
           <a href="{% url 'request_list' %}"
              class="{% if request.resolver_match.url_name == 'request_list' %}active{% endif %}">Requests</a>
-          <a href="{% url 'request_create' %}"
-             class="{% if request.resolver_match.url_name == 'request_create' %}active{% endif %}">New request</a>
+          {# The wizard is the normal way in: it commits straight to pending.
+             The plain form is the draft path, linked from the list. #}
+          <a href="{% url 'wizard_start' %}"
+             class="{% if 'wizard' in request.resolver_match.url_name %}active{% endif %}">New request</a>
         </nav>
         <div class="session">
           <span>{{ user.get_username }}</span>

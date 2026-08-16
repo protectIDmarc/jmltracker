@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% comment %}
+Shared shell for the wizard: heading, progress indicator, and the cancel
+escape hatch. Each step supplies wizard_content.
+{% endcomment %}
+
+{% block title %}New request — step {{ step }} of {{ total_steps }}{% endblock %}
+
+{% block content %}
+  <div class="page-head">
+    <div>
+      <h1>New access request</h1>
+      <p class="subtitle">Step {{ step }} of {{ total_steps }}</p>
+    </div>
+    <a class="button" href="{% url 'wizard_cancel' %}">Cancel</a>
+  </div>
+
+  <ol class="wizard-progress">
+    <li class="{% if step == 1 %}current{% elif step > 1 %}done{% endif %}">Employee</li>
+    <li class="{% if step == 2 %}current{% elif step > 2 %}done{% endif %}">Type &amp; date</li>
+    <li class="{% if step == 3 %}current{% elif step > 3 %}done{% endif %}">Systems</li>
+    <li class="{% if step == 4 %}current{% endif %}">Review</li>
+  </ol>
+
+  <div class="card form-card">
+    {% block wizard_content %}{% endblock %}
+  </div>
+{% endblock %}

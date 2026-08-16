@@ -369,3 +369,59 @@ button.destructive:hover, .button.destructive:hover {
 }
 
 .confirm-summary { padding: 1rem 0; }
+
+/* --- Wizard --- */
+
+.wizard-progress {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    list-style: none;
+    margin: 0 0 1.25rem;
+    padding: 0;
+    counter-reset: wizard-step;
+    font-size: 0.875rem;
+    color: var(--muted);
+}
+
+.wizard-progress li {
+    counter-increment: wizard-step;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.wizard-progress li::before {
+    content: counter(wizard-step);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.wizard-progress li.current { color: var(--text); font-weight: 600; }
+
+.wizard-progress li.current::before {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-text);
+}
+
+.wizard-progress li.done::before {
+    border-color: var(--status-approved);
+    color: var(--status-approved);
+}
+
+hr.rule {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1.5rem 0;
+}
+
+/* Radio lists (request type, employee mode) read better in one column. */
+.field ul.radio-single { columns: 1; }
