@@ -2,15 +2,15 @@
 
 import datetime
 
-from django.test import TestCase
 from django.urls import reverse
 
 from tracker.models import AccessRequest
 
+from .base import AppTestCase
 from .factories import make_employee, make_request, make_system, make_user
 
 
-class CreateTests(TestCase):
+class CreateTests(AppTestCase):
     def setUp(self):
         self.user = make_user()
         self.client.force_login(self.user)
@@ -73,7 +73,7 @@ class CreateTests(TestCase):
         self.assertNotIn(self.user, offered)
 
 
-class EditPermissionTests(TestCase):
+class EditPermissionTests(AppTestCase):
     """Own drafts and pending only — the M4 write guard."""
 
     def setUp(self):
@@ -110,7 +110,7 @@ class EditPermissionTests(TestCase):
         self.assertEqual(self.request.status, AccessRequest.Status.DRAFT)
 
 
-class WithdrawTests(TestCase):
+class WithdrawTests(AppTestCase):
     def setUp(self):
         self.owner = make_user()
         self.client.force_login(self.owner)
@@ -133,7 +133,7 @@ class WithdrawTests(TestCase):
         self.assertEqual(self.request.status, AccessRequest.Status.DRAFT)
 
 
-class SubmitTests(TestCase):
+class SubmitTests(AppTestCase):
     def setUp(self):
         self.owner = make_user()
         self.approver = make_user()
@@ -161,7 +161,7 @@ class SubmitTests(TestCase):
         self.assertEqual(request.status, AccessRequest.Status.DRAFT)
 
 
-class RetiredSystemTests(TestCase):
+class RetiredSystemTests(AppTestCase):
     def test_editing_keeps_a_retired_system_that_is_already_referenced(self):
         """Excluding it would silently drop it on save and rewrite history."""
         owner = make_user()

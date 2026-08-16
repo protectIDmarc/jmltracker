@@ -6,11 +6,11 @@ later is covered the moment it is routed. A test you have to remember to update
 is a test that will eventually be wrong.
 """
 
-from django.test import TestCase
 from django.urls import reverse
 
 from tracker import urls as tracker_urls
 
+from .base import AppTestCase
 from .factories import PASSWORD, make_request, make_user
 
 
@@ -26,7 +26,7 @@ def _all_tracker_urls():
     return built
 
 
-class AnonymousAccessTests(TestCase):
+class AnonymousAccessTests(AppTestCase):
     def test_every_tracker_view_redirects_anonymous_users_to_login(self):
         routes = _all_tracker_urls()
         # Guard against the enumeration silently finding nothing and the test
@@ -55,7 +55,7 @@ class AnonymousAccessTests(TestCase):
         self.assertEqual(response.status_code, 302)
 
 
-class AuthenticatedAccessTests(TestCase):
+class AuthenticatedAccessTests(AppTestCase):
     def setUp(self):
         # Needs a real password: two tests below post to the login view.
         self.user = make_user(password=PASSWORD)

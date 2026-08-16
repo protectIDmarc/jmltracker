@@ -16,15 +16,17 @@ import threading
 from unittest import mock
 
 from django.db import connection
-from django.test import Client, TransactionTestCase
+from django.test import Client
+
 from django.urls import reverse
 
 from tracker.models import AccessRequest
 
+from .base import AppTransactionTestCase
 from .factories import PASSWORD, make_request, make_user
 
 
-class ConcurrentDecisionTests(TransactionTestCase):
+class ConcurrentDecisionTests(AppTransactionTestCase):
     def setUp(self):
         self.requester = make_user("requester")
         # Real password: the threads sign in through the login view, because

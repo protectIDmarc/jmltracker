@@ -2,14 +2,14 @@
 
 from django.db import IntegrityError, transaction
 from django.db.models import ProtectedError
-from django.test import TestCase
 
 from tracker.models import AccessRequest, Employee
 
+from .base import AppTestCase
 from .factories import make_employee, make_request, make_user
 
 
-class EmployeeProtectionTests(TestCase):
+class EmployeeProtectionTests(AppTestCase):
     """Deleting a person with access history must fail loudly."""
 
     def test_protect_blocks_deleting_an_employee_with_requests(self):
@@ -37,7 +37,7 @@ class EmployeeProtectionTests(TestCase):
             user.delete()
 
 
-class EmployeeEmailTests(TestCase):
+class EmployeeEmailTests(AppTestCase):
     """Email is the practical identity key, so duplicates are refused."""
 
     def test_duplicate_email_is_rejected(self):
@@ -62,7 +62,7 @@ class EmployeeEmailTests(TestCase):
             email__iexact="person@example.com").count(), 2)
 
 
-class DefaultsTests(TestCase):
+class DefaultsTests(AppTestCase):
     def test_a_new_request_starts_as_a_draft(self):
         user = make_user()
         request = make_request(requested_by=user)

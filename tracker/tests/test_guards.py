@@ -6,15 +6,15 @@ the point of them. A guard with no test is a guard that will quietly stop
 working.
 """
 
-from django.test import TestCase
 from django.urls import reverse
 
 from tracker.models import AccessRequest
 
+from .base import AppTestCase
 from .factories import make_request, make_user
 
 
-class SelfApprovalTests(TestCase):
+class SelfApprovalTests(AppTestCase):
     def setUp(self):
         self.user = make_user()
         self.client.force_login(self.user)
@@ -36,7 +36,7 @@ class SelfApprovalTests(TestCase):
         self.assertIsNone(request.decided_at)
 
 
-class NominatedApproverTests(TestCase):
+class NominatedApproverTests(AppTestCase):
     def test_only_the_nominated_approver_may_decide(self):
         """Fails if the approver check is removed.
 
@@ -60,7 +60,7 @@ class NominatedApproverTests(TestCase):
         self.assertEqual(request.status, AccessRequest.Status.PENDING)
 
 
-class DoubleApprovalTests(TestCase):
+class DoubleApprovalTests(AppTestCase):
     def setUp(self):
         self.requester = make_user()
         self.approver = make_user()
@@ -91,7 +91,7 @@ class DoubleApprovalTests(TestCase):
         self.assertEqual(self.request.decided_at, first_decision)
 
 
-class DecisionStampTests(TestCase):
+class DecisionStampTests(AppTestCase):
     """Every decision records who took it and when."""
 
     def setUp(self):
@@ -146,7 +146,7 @@ class DecisionStampTests(TestCase):
         self.assertEqual(request.status, AccessRequest.Status.PENDING)
 
 
-class MarkCompletedTests(TestCase):
+class MarkCompletedTests(AppTestCase):
     """Completion is explicit, and only from approved."""
 
     def setUp(self):

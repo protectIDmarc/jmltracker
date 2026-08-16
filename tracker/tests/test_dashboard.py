@@ -1,14 +1,14 @@
 """Dashboard aggregation and the awaiting-my-approval panel."""
 
-from django.test import TestCase
 from django.urls import reverse
 
 from tracker.models import AccessRequest
 
+from .base import AppTestCase
 from .factories import make_request, make_user
 
 
-class DashboardCountTests(TestCase):
+class DashboardCountTests(AppTestCase):
     def setUp(self):
         self.user = make_user()
         self.other = make_user()
@@ -62,7 +62,7 @@ class DashboardCountTests(TestCase):
         self.assertEqual(len(aggregates), 1, "expected a single aggregate query")
 
 
-class AwaitingApprovalTests(TestCase):
+class AwaitingApprovalTests(AppTestCase):
     def setUp(self):
         self.user = make_user()
         self.other = make_user()

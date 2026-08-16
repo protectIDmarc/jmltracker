@@ -7,11 +7,11 @@ about failure, so it has to be tested by making it fail.
 
 from unittest import mock
 
-from django.test import TestCase
 from django.urls import reverse
 
 from tracker.models import AccessRequest, Employee
 
+from .base import AppTestCase
 from .factories import make_employee, make_system, make_user
 
 NEW_EMPLOYEE = {
@@ -25,7 +25,7 @@ NEW_EMPLOYEE = {
 }
 
 
-class WizardFlowTests(TestCase):
+class WizardFlowTests(AppTestCase):
     def setUp(self):
         self.user = make_user()
         self.approver = make_user()

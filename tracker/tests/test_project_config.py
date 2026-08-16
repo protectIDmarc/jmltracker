@@ -8,11 +8,12 @@ non-negotiable, where the failure mode is quiet rather than loud.
 import io
 
 from django.core.management import call_command
-from django.test import TestCase
 from django.conf import settings
 
+from .base import AppTestCase
 
-class MigrationStateTests(TestCase):
+
+class MigrationStateTests(AppTestCase):
     def test_no_model_changes_are_missing_a_migration(self):
         """Fails if someone edits a model and forgets makemigrations.
 
@@ -28,7 +29,7 @@ class MigrationStateTests(TestCase):
             self.fail(f"Missing migration for model changes:\n{out.getvalue()}")
 
 
-class DatabaseConfigTests(TestCase):
+class DatabaseConfigTests(AppTestCase):
     def test_postgresql_is_the_engine_everywhere(self):
         """SQLite is not used in any environment, including tests."""
         self.assertEqual(
@@ -45,7 +46,7 @@ class DatabaseConfigTests(TestCase):
         )
 
 
-class DemoAccountTests(TestCase):
+class DemoAccountTests(AppTestCase):
     def test_demo_password_is_not_hardcoded_in_settings(self):
         """It comes from the environment; empty means unusable passwords.
 
@@ -55,7 +56,7 @@ class DemoAccountTests(TestCase):
         self.assertIsInstance(settings.DEMO_PASSWORD, str)
 
 
-class AuthRedirectTests(TestCase):
+class AuthRedirectTests(AppTestCase):
     def test_login_redirects_to_a_route_that_exists(self):
         """Fails loudly rather than 500ing every login after a rename."""
         from django.urls import reverse
