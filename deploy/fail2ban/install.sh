@@ -56,6 +56,24 @@ fail2ban-client status sshd || true
 fail2ban-client status jmltracker-login || true
 
 echo
+echo "==> Checking the login jail is watching the file, not the journal"
+# The check that matters. fail2ban-regex above proves the filter matches lines
+# in the file, but the running jail only reads that file if it is file-backed.
+# Debian and Ubuntu default every jail to backend = systemd, and with that the
+# logpath is ignored: the jail reads the journal, finds no nginx requests, and
+# bans nobody while still appearing in the jail list as active.
+if fail2ban-client status jmltracker-login | grep -q "Journal matches"; then
+    echo "ERROR: jmltracker-login is reading the systemd journal, so it is" >&2
+    echo "       watching nothing. Set 'backend = auto' in the jail." >&2
+    exit 1
+fi
+if ! fail2ban-client status jmltracker-login | grep -q "${ACCESS_LOG}"; then
+    echo "ERROR: jmltracker-login is not watching ${ACCESS_LOG}." >&2
+    exit 1
+fi
+echo "    OK - watching ${ACCESS_LOG}"
+
+echo
 echo "==> Done. To prove the login jail actually bans, from a machine NOT in"
 echo "    ignoreip, fail the login 10 times, then:"
 echo "      sudo fail2ban-client status jmltracker-login"
