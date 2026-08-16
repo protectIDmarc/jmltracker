@@ -13,16 +13,25 @@ Wants=postgresql.service
 [Service]
 Type=notify
 User=secops
-Group=secops
+# Primary group www-data so the socket below is created group-owned by the
+# nginx user. Without this the socket has to be world-accessible for nginx to
+# reach it, which would let any local account talk to the application.
+Group=www-data
 WorkingDirectory=/opt/jmltracker/jmltracker
 
 # Config comes from the environment file, not from this unit, so the same unit
-# works on any host. Keep it 0600 and owned by root.
+# works on any host. Owned by secops, mode 0600 — it holds the database
+# password and the secret key.
+#
+# Note: systemd parses this file itself and its rules are not django-environ's
+# — it does not strip quotes the same way and does no variable expansion. Keep
+# every value a plain unquoted string.
 EnvironmentFile=/opt/jmltracker/jmltracker/.env
 
 ExecStart=/opt/jmltracker/jmltracker/.venv/bin/gunicorn \
     --workers 3 \
     --bind unix:/run/jmltracker/gunicorn.sock \
+    --umask 007 \
     --access-logfile - \
     --error-logfile - \
     jmltracker.wsgi:application
