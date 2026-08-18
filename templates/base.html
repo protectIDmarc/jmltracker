@@ -8,8 +8,6 @@
 </head>
 <body>
   {% if demo_mode %}
-    {# Shown to everyone, signed in or not: a visitor should know the data is
-       synthetic and disposable before they start changing it. #}
     <p class="demo-banner">
       <strong>Demonstration site.</strong> All data is invented, the accounts are
       shared, and everything resets on a schedule — create, edit and withdraw
@@ -26,8 +24,6 @@
              class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Dashboard</a>
           <a href="{% url 'request_list' %}"
              class="{% if request.resolver_match.url_name == 'request_list' %}active{% endif %}">Requests</a>
-          {# The wizard is the normal way in: it commits straight to pending.
-             The plain form is the draft path, linked from the list. #}
           <a href="{% url 'wizard_start' %}"
              class="{% if 'wizard' in request.resolver_match.url_name %}active{% endif %}">New request</a>
         </nav>
