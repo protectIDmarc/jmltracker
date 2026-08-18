@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import AccessRequest, Employee, System
+from .models import AccessRequest, Department, Employee, System
 
 
 @admin.register(System)
@@ -10,11 +10,32 @@ class SystemAdmin(admin.ModelAdmin):
     search_fields = ["name"]
 
 
+@admin.register(Department)
+class DepartmentAdmin(admin.ModelAdmin):
+    """Where IT curates the department list.
+
+    Retire a department by clearing is_active rather than deleting it: the
+    foreign key is PROTECTed, so a delete is refused anyway while anyone is
+    recorded against it.
+    """
+
+    list_display = ["name", "is_active", "employee_count"]
+    list_filter = ["is_active"]
+    search_fields = ["name"]
+
+    @admin.display(description="Employees")
+    def employee_count(self, obj):
+        return obj.employees.count()
+
+
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
     list_display = ["last_name", "first_name", "email", "department", "status"]
     list_filter = ["status", "department"]
     search_fields = ["first_name", "last_name", "email"]
+    # The list renders the department of every row; without this that is one
+    # extra query per employee.
+    list_select_related = ["department"]
 
 
 @admin.register(AccessRequest)

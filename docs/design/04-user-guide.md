@@ -8,7 +8,7 @@ Every page requires authentication. There is no public dashboard, and following 
 
 The login page deliberately carries nothing credential-shaped — no printed demo logins, no “sign in as” shortcut. Demo credentials are published in the README and nowhere else.
 
-Two-factor authentication is **designed but not built**. Signing in is a single step: username and password. The design is complete — a time-based code from an authenticator app, four configuration switches, per-device throttling — and is held as the final, optional milestone. Nothing in the running application implements it.
+Two-factor authentication is designed but not built. Signing in is a single step: username and password. The design is complete — a time-based code from an authenticator app, four configuration switches, per-device throttling — and is held as the final, optional milestone. Nothing in the running application implements it.
 
 ## Requester
 
@@ -73,9 +73,9 @@ The detail page is the audit record: employee and department, the systems (retir
 
 ## Administrators
 
-The Django admin at /admin/ manages the system catalogue and corrects data. It is restricted to staff accounts; the demo accounts have no administrative rights, so /admin/ is closed to them.
+The Django admin at /admin/ manages the system and department catalogues and corrects data. It is restricted to staff accounts; the demo accounts have no administrative rights, so /admin/ is closed to them.
 
-Retire a system by clearing is active rather than deleting it — historic requests must keep naming the system they were raised against. Deleting an employee who has request history is refused outright.
+Retire a system by clearing is active rather than deleting it — historic requests must keep naming the system they were raised against. Deleting an employee who has request history is refused outright. Departments work the same way, and the admin is where the list everyone else picks from is maintained: add one and it appears in the wizard immediately. Deleting a department anyone is recorded against is refused too.
 
 ## Trying the demo
 
@@ -83,4 +83,4 @@ The public demo is seeded with invented people on example.com addresses and rese
 
 Credentials are in the README. The instructive path is to sign in as the requester, raise a request through the wizard, then sign in as the approver and decide it — that walks the whole lifecycle in about two minutes.
 
-Two-factor authentication is not built. The demo is part of why it is specified to ship disabled even when it is: the accounts are shared, and a second factor enrolled by one visitor would lock out the next.
+Two-factor authentication is not built. The demo is part of why it is specified to ship disabled even once it is: the accounts are shared, and a second factor enrolled by one visitor would lock out the next.

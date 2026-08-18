@@ -26,19 +26,21 @@ DATABASE_URL is the single database lever: moving between a local Postgres, the 
 
 ## Data model
 
-Three tables.
+Four tables.
 
 System — an application or entitlement. name (unique), category, is_active. Retired systems are deactivated, never deleted: historic requests must keep naming the system they were actually raised against.
 
-Employee — the person. first_name, last_name, email (unique), department, job_title, start_date, status.
+Department — a curated lookup. name (unique), is_active. An administrator maintains the list; everyone else picks from it. Free text does not survive contact with real users: “Finance”, “finance” and “Finance Dept” are one department to a reader and three to the database, which makes grouping, filtering and any later reporting meaningless. Retired departments are deactivated rather than deleted, for the same reason as systems.
+
+Employee — the person. first_name, last_name, email (unique), a foreign key to Department, job_title, start_date, status. job_title stays free text deliberately: job titles are genuinely open-ended, and a lookup table would fight the data rather than tidy it.
 
 AccessRequest — the audit record. Foreign key to Employee, many-to-many to System, plus request_type, requested_date, status, requested_by, approver, decided_at, notes and timestamps.
 
 ### Deletion behaviour
 
-employee, requested_by and approver are all PROTECT. Deleting a person who has request history, or a user who raised or signed off a request, fails loudly. Evidence that disappears when a row is tidied away is not evidence.
+employee, department, requested_by and approver are all PROTECT. Deleting a person who has request history, or a user who raised or signed off a request, fails loudly. Evidence that disappears when a row is tidied away is not evidence.
 
-The cost is that removing a departed employee requires dealing with their history first. That is the correct cost.
+The cost is that removing a departed employee requires dealing with their history first, and that a department cannot be deleted while anyone is recorded against it. That is the correct cost in both cases — a department that vanishes takes the meaning of every employee record that referenced it.
 
 ### What approver means
 

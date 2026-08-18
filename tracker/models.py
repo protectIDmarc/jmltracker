@@ -1,10 +1,10 @@
 """
 Domain model for the JML access request tracker.
 
-Three tables: the systems access can be granted to, the people it is granted
-for, and the request that ties them together. The AccessRequest row is the
-audit evidence — who asked for what, when, and who approved it — so the schema
-favours preserving history over tidiness.
+Four tables: the systems access can be granted to, the departments people
+belong to, the people themselves, and the request that ties them together. The
+AccessRequest row is the audit evidence — who asked for what, when, and who
+approved it — so the schema favours preserving history over tidiness.
 """
 
 from django.conf import settings
@@ -38,6 +38,27 @@ class System(models.Model):
         return self.name
 
 
+class Department(models.Model):
+    """A department an employee belongs to.
+
+    A lookup table rather than free text on Employee. Typed departments drift
+    immediately — "Finance", "finance" and "Finance Dept" are three groups to
+    the database and one to a reader — which makes filtering and reporting
+    meaningless. IT curates the list in the admin; everyone else picks from it.
+    """
+
+    name = models.CharField(max_length=100, unique=True)
+    # Deactivated rather than deleted, for the same reason as System: employees
+    # already recorded against a department must keep naming it.
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
 class Employee(models.Model):
     """The person access is being requested for."""
 
@@ -51,7 +72,14 @@ class Employee(models.Model):
     # Unique because email is the practical identity key for an employee and
     # the join key to upstream HR systems.
     email = models.EmailField(unique=True)
-    department = models.CharField(max_length=100)
+    # PROTECT: a department with people recorded against it cannot be deleted,
+    # only deactivated. Deleting one would either orphan the employees or
+    # silently rewrite what department they were in.
+    department = models.ForeignKey(
+        "Department",
+        on_delete=models.PROTECT,
+        related_name="employees",
+    )
     job_title = models.CharField(max_length=100)
     start_date = models.DateField()
     status = models.CharField(

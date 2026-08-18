@@ -12,14 +12,13 @@ from django.urls import reverse
 from tracker.models import AccessRequest, Employee
 
 from .base import AppTestCase
-from .factories import make_employee, make_system, make_user
+from .factories import make_department, make_employee, make_system, make_user
 
 NEW_EMPLOYEE = {
     "mode": "new",
     "first_name": "Wanda",
     "last_name": "Newstarter",
     "email": "wanda.newstarter@example.com",
-    "department": "Finance",
     "job_title": "Analyst",
     "start_date": "2026-09-01",
 }
@@ -32,6 +31,9 @@ class WizardFlowTests(AppTestCase):
         self.client.force_login(self.user)
         self.employee = make_employee()
         self.system = make_system()
+        self.department = make_department("Finance")
+        # department is a ModelChoiceField now: the payload carries its key.
+        self.new_employee = {**NEW_EMPLOYEE, "department": self.department.pk}
 
     # --- helpers ---
 
@@ -78,7 +80,7 @@ class WizardFlowTests(AppTestCase):
     def test_no_rows_are_written_before_the_final_confirm(self):
         before = (Employee.objects.count(), AccessRequest.objects.count())
         self.client.get(reverse("wizard_start"))
-        self.client.post(reverse("wizard_employee"), NEW_EMPLOYEE)
+        self.client.post(reverse("wizard_employee"), self.new_employee)
         self._step2()
         self._step3()
         self.assertEqual(
@@ -88,7 +90,7 @@ class WizardFlowTests(AppTestCase):
     def test_an_abandoned_wizard_leaves_nothing_behind(self):
         before = (Employee.objects.count(), AccessRequest.objects.count())
         self.client.get(reverse("wizard_start"))
-        self.client.post(reverse("wizard_employee"), NEW_EMPLOYEE)
+        self.client.post(reverse("wizard_employee"), self.new_employee)
         self._step2()
         self._step3()
         self.client.get(reverse("wizard_cancel"))
@@ -148,7 +150,7 @@ class WizardFlowTests(AppTestCase):
 
     def test_confirming_creates_the_new_employee_and_the_request_together(self):
         self.client.get(reverse("wizard_start"))
-        self.client.post(reverse("wizard_employee"), NEW_EMPLOYEE)
+        self.client.post(reverse("wizard_employee"), self.new_employee)
         self._step2()
         self._step3()
         self._step4()
@@ -173,7 +175,7 @@ class WizardFlowTests(AppTestCase):
         nobody asked for.
         """
         self.client.get(reverse("wizard_start"))
-        self.client.post(reverse("wizard_employee"), NEW_EMPLOYEE)
+        self.client.post(reverse("wizard_employee"), self.new_employee)
         self._step2()
         self._step3()
 
@@ -193,7 +195,7 @@ class WizardFlowTests(AppTestCase):
         """Not at the commit, four steps later, as an IntegrityError."""
         make_employee(email=NEW_EMPLOYEE["email"])
         self.client.get(reverse("wizard_start"))
-        response = self.client.post(reverse("wizard_employee"), NEW_EMPLOYEE)
+        response = self.client.post(reverse("wizard_employee"), self.new_employee)
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("email", response.context["form"].errors)

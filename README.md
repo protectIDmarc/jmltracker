@@ -23,7 +23,7 @@ In most organisations, access requests for joiners, movers and leavers arrive by
 
 The tracker records access requests across the employee lifecycle. A requester raises a request for an employee, selects the systems involved, and nominates an approver. The approver reviews and approves or rejects it, and every decision is stamped with the approver and the decision time. The result is one authoritative record of access decisions, enforced approval rules, and evidence available on demand.
 
-It is a deliberately focused build: clean relational CRUD over three tables, a guided create wizard, enforced approval rules, and a dashboard. Background task queues, live provisioning against Active Directory or Microsoft Graph, and multi-tenancy are intentionally out of scope — one deployment serves one organisation.
+It is a deliberately focused build: clean relational CRUD over four tables, a guided create wizard, enforced approval rules, and a dashboard. Background task queues, live provisioning against Active Directory or Microsoft Graph, and multi-tenancy are intentionally out of scope — one deployment serves one organisation.
 
 ---
 
@@ -81,10 +81,11 @@ Nothing environment-specific is hardcoded. `DEBUG`, `SECRET_KEY`, `ALLOWED_HOSTS
 
 ## Data model
 
-Three related tables:
+Four related tables:
 
 - **System** — an application or entitlement (`name`, `category`, `is_active`).
-- **Employee** — the person in the lifecycle (`first_name`, `last_name`, unique `email`, `department`, `job_title`, `start_date`, `status`).
+- **Department** — a curated lookup (`name`, `is_active`), maintained by an administrator. Free text would let "Finance", "finance" and "Finance Dept" coexist as three groups that mean one thing, which makes any grouping or filtering meaningless.
+- **Employee** — the person in the lifecycle (`first_name`, `last_name`, unique `email`, a protected foreign key to Department, `job_title`, `start_date`, `status`). `job_title` stays free text deliberately — job titles are genuinely open-ended in a way departments are not.
 - **AccessRequest** — a foreign key to Employee (protected on delete, so history is preserved), a many-to-many to System, a `request_type` (join / move / leave), `requested_date`, `status`, `requested_by` and `approver`, `decided_at`, `notes` and timestamps.
 
 ### Status lifecycle

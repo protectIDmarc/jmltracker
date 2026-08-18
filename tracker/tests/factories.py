@@ -12,7 +12,7 @@ import itertools
 
 from django.contrib.auth import get_user_model
 
-from tracker.models import AccessRequest, Employee, System
+from tracker.models import AccessRequest, Department, Employee, System
 
 User = get_user_model()
 
@@ -46,12 +46,21 @@ def make_employee(**kwargs):
         "first_name": "Test",
         "last_name": f"Person{n}",
         "email": f"person{n}@example.com",
-        "department": "Engineering",
+        "department": kwargs.pop("department", None) or make_department(),
         "job_title": "Engineer",
         "start_date": datetime.date(2026, 1, 1),
     }
     defaults.update(kwargs)
     return Employee.objects.create(**defaults)
+
+
+def make_department(name=None, **kwargs):
+    """Departments are get_or_create'd by name: most tests want the same one,
+    and a unique constraint makes a blind create fail on the second call."""
+    department, _ = Department.objects.get_or_create(
+        name=name or "Engineering", defaults=kwargs
+    )
+    return department
 
 
 def make_system(name=None, **kwargs):

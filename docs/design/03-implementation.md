@@ -17,6 +17,7 @@ Eleven milestones, each ending in a commit and a tag. The sequence was chosen so
 | M8 | Deployment | Gunicorn, nginx, TLS, deploy.sh |
 | M9 | Demo hardening | Scheduled reset, demo banner, README review |
 | M10 | Optional MFA | (optional; not built) |
+| M11 | Department lookup | Free-text department replaced by a curated table |
 
 Why PostgreSQL first. Moving database engine late is how engine-specific defects surface at the worst moment. The engine was settled before a single view existed.
 
@@ -52,21 +53,26 @@ The demo password comes from configuration. Published deliberately in the README
 
 reset_demo refuses unless DEMO_MODE is on. That guard is the entire safety of scheduling a destructive command: on a real deployment the flag is false, so a stray cron entry deletes nothing.
 
+Department is a table, not a text field. Added after the rest was working, which is the honest order — the defect only becomes obvious once real people are typing into the form. Free text drifts into near-duplicates that group as separate values, so the field became a foreign key to a list an administrator curates. The migration was deliberately split in three: create the table and a nullable key, copy the existing values across, then drop the old column and make the key required. One step would either lose every recorded department or fail on the not-null constraint.
+
+job_title was left alone. The same argument does not apply: job titles are genuinely open-ended, and a lookup table would fight the data rather than tidy it. Consistency is not a reason to make a bad field.
+
 HSTS starts at one hour, not one year. Browsers cache it and refuse plain HTTP for the whole max-age regardless of what is served afterwards. A mistake at a year lasts a year.
 
 ## Testing
 
-86 tests, roughly 23 seconds, PostgreSQL throughout.
+94 tests, roughly 24 seconds, PostgreSQL throughout.
 
 | Area | Covers |
 | --- | --- |
-| Models | PROTECT on all three foreign keys, unique email, defaults |
+| Models | PROTECT on every foreign key, unique email and department name, defaults |
 | Access control | Every route in the URLconf redirects anonymous users |
 | Write paths | Ownership and status guards, forgery of requested_by, POST-only actions |
 | Guards | Self-approval, nominated approver, double-approval, decision stamps |
 | Concurrency | Two threads racing one row; each guard layer in isolation |
 | Wizard | Step guards, preserved answers, atomicity, abandonment |
 | Dashboard | Counts, queue filtering, single-query aggregation |
+| Departments | PROTECT, deactivation, active-only picker, re-read at commit |
 | Demo | Reset guard and effect, banner visibility |
 | Project config | No missing migrations, no SQLite, login redirect resolves |
 

@@ -18,7 +18,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
-from tracker.models import AccessRequest, Employee, System
+from tracker.models import AccessRequest, Department, Employee, System
 
 User = get_user_model()
 
@@ -44,6 +44,20 @@ SYSTEMS = [
     # Retired, but kept for the historic requests that reference it. Exercises
     # the is_active filter in the wizard's system picker.
     ("Legacy Timesheets", System.Category.BUSINESS_APP, False),
+]
+
+# (name, is_active). Print Services is retired with nobody in it: it exercises
+# the picker's active-only filter the way Legacy Timesheets does for systems.
+DEPARTMENTS = [
+    ("Engineering", True),
+    ("Finance", True),
+    ("IT Operations", True),
+    ("Legal", True),
+    ("Marketing", True),
+    ("People", True),
+    ("Sales", True),
+    ("Security", True),
+    ("Print Services", False),
 ]
 
 # (first, last, department, job title, months since start, status)
@@ -161,11 +175,13 @@ class Command(BaseCommand):
         approver = self._get_actor(options["approver"])
 
         systems = self._seed_systems()
-        employees = self._seed_employees()
+        departments = self._seed_departments()
+        employees = self._seed_employees(departments)
         created = self._seed_requests(systems, employees, requester, approver)
 
         self._say(
             f"Seeded: {System.objects.count()} systems, "
+            f"{Department.objects.count()} departments, "
             f"{Employee.objects.count()} employees, "
             f"{AccessRequest.objects.count()} requests "
             f"({created} created this run).",
@@ -179,12 +195,16 @@ class Command(BaseCommand):
             AccessRequest.objects.count(),
             Employee.objects.count(),
             System.objects.count(),
+            Department.objects.count(),
         )
         AccessRequest.objects.all().delete()
         Employee.objects.all().delete()
         System.objects.all().delete()
+        # Departments last: employees are PROTECTed by them too.
+        Department.objects.all().delete()
         self._say(
-            f"Cleared {counts[0]} requests, {counts[1]} employees, {counts[2]} systems."
+            f"Cleared {counts[0]} requests, {counts[1]} employees, "
+            f"{counts[2]} systems, {counts[3]} departments."
         )
 
     def _get_actor(self, username):
@@ -232,7 +252,16 @@ class Command(BaseCommand):
             systems[name] = obj
         return systems
 
-    def _seed_employees(self):
+    def _seed_departments(self):
+        departments = {}
+        for name, is_active in DEPARTMENTS:
+            obj, _ = Department.objects.get_or_create(
+                name=name, defaults={"is_active": is_active}
+            )
+            departments[name] = obj
+        return departments
+
+    def _seed_employees(self, departments):
         today = timezone.localdate()
         employees = []
         for first, last, dept, title, months_ago, status in EMPLOYEES:
@@ -242,7 +271,7 @@ class Command(BaseCommand):
                 defaults={
                     "first_name": first,
                     "last_name": last,
-                    "department": dept,
+                    "department": departments[dept],
                     "job_title": title,
                     # Approximate months as 30 days: exact dates carry no
                     # meaning in synthetic data, only relative age does.

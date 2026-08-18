@@ -95,14 +95,14 @@ def dashboard(request):
         AccessRequest.objects
         .filter(status=AccessRequest.Status.PENDING, approver=request.user)
         .exclude(requested_by=request.user)
-        .select_related("employee")
+        .select_related("employee__department")
         .prefetch_related("systems")
     )
 
     mine = (
         AccessRequest.objects
         .filter(requested_by=request.user, status__in=OPEN_STATUSES)
-        .select_related("employee", "approver")
+        .select_related("employee__department", "approver")
     )
 
     return render(request, "tracker/dashboard.html", {
@@ -124,7 +124,7 @@ def request_list(request):
     """
     queryset = (
         AccessRequest.objects
-        .select_related("employee", "approver")
+        .select_related("employee__department", "approver")
         .prefetch_related("systems")
     )
 
@@ -151,7 +151,7 @@ def request_detail(request, pk):
     """One access request in full — the audit record for that decision."""
     access_request = get_object_or_404(
         AccessRequest.objects.select_related(
-            "employee", "requested_by", "approver"
+            "employee__department", "requested_by", "approver"
         ).prefetch_related("systems"),
         pk=pk,
     )
@@ -288,7 +288,7 @@ def request_decide(request, pk):
     """
     access_request = get_object_or_404(
         AccessRequest.objects.select_related(
-            "employee", "requested_by", "approver"
+            "employee__department", "requested_by", "approver"
         ).prefetch_related("systems"),
         pk=pk,
     )
@@ -360,7 +360,7 @@ def request_complete(request, pk):
     that nobody has actually granted.
     """
     access_request = get_object_or_404(
-        AccessRequest.objects.select_related("employee", "approver"), pk=pk
+        AccessRequest.objects.select_related("employee__department", "approver"), pk=pk
     )
 
     if not _may_complete(request.user, access_request):

@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 
-from .models import AccessRequest, Employee, System
+from .models import AccessRequest, Department, Employee, System
 
 User = get_user_model()
 
@@ -103,7 +103,14 @@ class WizardEmployeeForm(forms.Form):
     first_name = forms.CharField(max_length=50, required=False)
     last_name = forms.CharField(max_length=50, required=False)
     email = forms.EmailField(required=False)
-    department = forms.CharField(max_length=100, required=False)
+    # A lookup, not free text: typed departments drift into near-duplicates
+    # that group as separate values. Only active ones can be chosen for someone
+    # new - a retired department is one nobody should be joining.
+    department = forms.ModelChoiceField(
+        queryset=Department.objects.filter(is_active=True),
+        required=False,
+        empty_label="Choose a department",
+    )
     job_title = forms.CharField(max_length=100, required=False)
     start_date = forms.DateField(
         required=False, widget=forms.DateInput(attrs={"type": "date"})

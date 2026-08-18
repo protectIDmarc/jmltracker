@@ -22,7 +22,7 @@ The record is the point. Every design decision follows from treating the request
 | --- | --- | --- |
 | Requester | Raises and tracks requests; edits or withdraws their own | Change anything after a decision |
 | Approver | Decides requests nominated to them; marks provisioning complete | Approve their own request, or re-decide one |
-| Administrator | Django admin, for the system catalogue and corrections | — (deliberately outside the request lifecycle) |
+| Administrator | Django admin, for the system and department catalogues and corrections | — (deliberately outside the request lifecycle) |
 
 There is no anonymous role. Every page requires authentication; there is no public dashboard and no unauthenticated read path.
 

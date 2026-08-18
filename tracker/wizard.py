@@ -32,7 +32,7 @@ from .forms import (
     WizardSystemsForm,
     WizardTypeDateForm,
 )
-from .models import AccessRequest, Employee, System
+from .models import AccessRequest, Department, Employee, System
 
 User = get_user_model()
 
@@ -124,7 +124,9 @@ def wizard_employee(request):
                     "first_name": data["first_name"],
                     "last_name": data["last_name"],
                     "email": data["email"],
-                    "department": data["department"],
+                    # The session is JSON, so the department is held as a key
+                    # and resolved back to a row at commit.
+                    "department": data["department"].pk,
                     "job_title": data["job_title"],
                     # ISO string: the session is JSON, which has no date type.
                     "start_date": data["start_date"].isoformat(),
@@ -235,9 +237,17 @@ def _summary(state):
     if state.get("employee_id"):
         employee = Employee.objects.filter(pk=state["employee_id"]).first()
 
+    new_employee = state.get("new_employee")
+    new_department = None
+    if new_employee:
+        new_department = Department.objects.filter(
+            pk=new_employee.get("department")
+        ).first()
+
     return {
         "employee": employee,
-        "new_employee": state.get("new_employee"),
+        "new_employee": new_employee,
+        "new_department": new_department,
         "systems": System.objects.filter(pk__in=state.get("system_ids", [])),
         "request_type_label": dict(
             AccessRequest.RequestType.choices
@@ -275,6 +285,16 @@ def _commit(request, state, form):
         )
         return redirect("wizard_employee")
 
+    new_employee = state.get("new_employee")
+    if new_employee and not Department.objects.filter(
+        pk=new_employee.get("department"), is_active=True
+    ).exists():
+        messages.error(
+            request,
+            "That department is no longer available. Please choose another.",
+        )
+        return redirect("wizard_employee")
+
     try:
         # Everything below either commits together or not at all. If creating
         # the employee succeeds but the request fails, the employee is rolled
@@ -283,6 +303,7 @@ def _commit(request, state, form):
             if state.get("new_employee"):
                 data = dict(state["new_employee"])
                 data["start_date"] = datetime.date.fromisoformat(data["start_date"])
+                data["department_id"] = data.pop("department")
                 employee = Employee.objects.create(**data)
             else:
                 employee = Employee.objects.get(pk=state["employee_id"])
