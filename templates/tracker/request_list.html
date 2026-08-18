@@ -11,8 +11,6 @@
       </p>
     </div>
     <div class="form-actions">
-      {# Wizard first: it is the normal origin of a submitted request. The
-         plain form is the save-and-finish-later path. #}
       <a class="button primary" href="{% url 'wizard_start' %}">New request</a>
       <a class="button" href="{% url 'request_create' %}">Quick draft</a>
     </div>
@@ -39,7 +37,6 @@
                   <div class="muted">{{ req.employee.department }}</div>
                 </td>
                 <td>{{ req.get_request_type_display }}</td>
-                {# join reads the prefetch cache; .count would hit the DB per row #}
                 <td class="muted">{{ req.systems.all|join:", "|truncatechars:44 }}</td>
                 <td>{{ req.requested_date|date:"j M Y" }}</td>
                 <td>

@@ -6,7 +6,6 @@
     {% include "tracker/_form_fields.html" with form=form %}
     <div class="form-actions">
       <button type="submit" class="primary">Continue</button>
-      {# Back is a plain link: the previous step repopulates from the session. #}
       <a class="button" href="{% url 'wizard_employee' %}">Back</a>
     </div>
   </form>

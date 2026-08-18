@@ -8,8 +8,6 @@
     <a href="{% url 'request_list' %}">&larr; All requests</a>
   </p>
 
-  {# Every one of these is re-checked in the view. Hiding a button is not
-     access control - it only avoids offering an action that would be refused. #}
   {% if may_modify or may_decide or may_complete %}
     <div class="form-actions actions-bar">
       {% if may_modify %}
@@ -50,7 +48,6 @@
       </dd>
 
       <dt>
-        {# The brief's one form, three framings: the label reflects intent. #}
         {% if access_request.request_type == 'joiner' %}Systems to grant
         {% elif access_request.request_type == 'leaver' %}Systems to revoke
         {% else %}Systems affected{% endif %}

@@ -20,7 +20,6 @@ figure leads the view; the rest are secondary tiles.
   </div>
 
   <div class="kpi-row">
-    {# The one number the view leads with. #}
     <div class="card stat hero">
       <p class="stat-label">Open requests</p>
       <p class="stat-value">{{ stats.open }}</p>
@@ -100,7 +99,6 @@ figure leads the view; the rest are secondary tiles.
                   {% if req.approver %}{{ req.approver.get_username }}
                   {% else %}Not nominated{% endif %}
                 </td>
-                {# Status carries a text label, never colour alone. #}
                 <td><span class="badge status-{{ req.status }}">{{ req.get_status_display }}</span></td>
               </tr>
             {% endfor %}

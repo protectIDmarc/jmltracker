@@ -20,7 +20,6 @@ as" shortcut. The README is the single place demo credentials are published.
       {% csrf_token %}
       {{ form.as_p }}
       <button type="submit" class="primary">Sign in</button>
-      {# Preserves ?next= so a deep link survives the login redirect. #}
       <input type="hidden" name="next" value="{{ next }}">
     </form>
   </div>

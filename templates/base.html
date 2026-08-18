@@ -29,7 +29,6 @@
         </nav>
         <div class="session">
           <span>{{ user.get_username }}</span>
-          {# Logout is POST-only in modern Django, so this is a form, not a link. #}
           <form method="post" action="{% url 'logout' %}">
             {% csrf_token %}
             <button type="submit">Sign out</button>
