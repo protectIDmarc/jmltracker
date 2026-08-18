@@ -10,6 +10,9 @@ A Django application for tracking **Joiner / Mover / Leaver (JML)** access reque
 **Live demo: [jmltracker.dueback.app](https://jmltracker.dueback.app)** — sign in
 with the demo credentials in the [Demo](#demo) section below.
 
+**[Design documentation](docs/design/)** — use case, technical design,
+implementation and decision log, and a user guide.
+
 ---
 
 ## The problem
@@ -167,7 +170,7 @@ The demo is seeded with synthetic data (invented names on `example.com` addresse
 
 These two accounts are created by `python manage.py seed_data`. They are ordinary users with no staff or superuser rights, so the Django admin stays closed to them. Their password is read from `DEMO_PASSWORD` rather than hardcoded: leave it unset and the accounts get unusable passwords and cannot be logged into at all, which is the default for any checkout that is not the public demo.
 
-Sign in as the requester to raise a request, then sign in as the approver to decide it — that walks the whole flow. Two-factor authentication is switched off on the demo: the accounts are shared, so a second factor enrolled by one visitor would lock out the next.
+Sign in as the requester to raise a request, then sign in as the approver to decide it — that walks the whole flow. Two-factor authentication is not built. The demo is part of why it is specified to ship switched off even once it is: the accounts are shared, so a second factor enrolled by one visitor would lock out the next.
 
 ---
 

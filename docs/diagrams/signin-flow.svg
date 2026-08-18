@@ -1,11 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="720" height="572" viewBox="0 0 720 572" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="410" viewBox="0 0 720 410" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
   <defs>
     <filter id="s" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#0f172a" flood-opacity="0.12"/></filter>
     <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 2L8 5L2 8Z" fill="#64748b"/></marker>
   </defs>
 
   <text x="24" y="26" font-size="16" font-weight="700" fill="#0f172a">Signing in — both roles</text>
-  <text x="24" y="44" font-size="12" fill="#64748b">Every page sits behind login; the dashboard is not public. MFA is off on the demo.</text>
+  <text x="24" y="44" font-size="12" fill="#64748b">Every page sits behind login; the dashboard is not public.</text>
 
   <!-- 1 Visitor -->
   <g filter="url(#s)"><rect x="240" y="60" width="240" height="54" rx="10" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.4"/></g>
@@ -20,30 +20,14 @@
 
   <!-- 3 Credentials -->
   <g filter="url(#s)"><rect x="240" y="228" width="240" height="54" rx="10" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.4"/></g>
-  <text x="360" y="259" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">Username + password</text>
+  <text x="360" y="251" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">Username + password</text>
+  <text x="360" y="269" text-anchor="middle" font-size="11.5" fill="#64748b">one step · no second factor</text>
   <line x1="360" y1="282" x2="360" y2="312" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
 
-  <!-- 4 MFA decision -->
-  <g filter="url(#s)"><rect x="240" y="312" width="240" height="54" rx="10" fill="#fef3c7" stroke="#fbbf24" stroke-width="1.4"/></g>
-  <text x="360" y="335" text-anchor="middle" font-size="14" font-weight="600" fill="#92400e">MFA enabled?</text>
-  <text x="360" y="353" text-anchor="middle" font-size="11.5" fill="#a16207">off on the demo</text>
+  <!-- 4 Dashboard -->
+  <g filter="url(#s)"><rect x="240" y="312" width="240" height="54" rx="10" fill="#dcfce7" stroke="#4ade80" stroke-width="1.4"/></g>
+  <text x="360" y="335" text-anchor="middle" font-size="14" font-weight="600" fill="#166534">Signed in → Dashboard</text>
+  <text x="360" y="353" text-anchor="middle" font-size="11.5" fill="#15803d">everything is gated</text>
 
-  <!-- yes -> code -->
-  <line x1="360" y1="366" x2="360" y2="408" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
-  <text x="372" y="390" font-size="11" font-weight="600" fill="#475569">yes</text>
-
-  <!-- 5 Code -->
-  <g filter="url(#s)"><rect x="240" y="408" width="240" height="54" rx="10" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.4"/></g>
-  <text x="360" y="431" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">Enter 6-digit code</text>
-  <text x="360" y="449" text-anchor="middle" font-size="11.5" fill="#64748b">authenticator app · recovery code</text>
-  <line x1="360" y1="462" x2="360" y2="492" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
-
-  <!-- no bypass -->
-  <path d="M480 339 H560 V519 H482" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
-  <text x="524" y="331" font-size="11" font-weight="600" fill="#475569">no</text>
-
-  <!-- 6 Dashboard -->
-  <g filter="url(#s)"><rect x="240" y="492" width="240" height="54" rx="10" fill="#dcfce7" stroke="#4ade80" stroke-width="1.4"/></g>
-  <text x="360" y="515" text-anchor="middle" font-size="14" font-weight="600" fill="#166534">Signed in → Dashboard</text>
-  <text x="360" y="533" text-anchor="middle" font-size="11.5" fill="#15803d">everything is gated</text>
+  <text x="360" y="390" text-anchor="middle" font-size="11.5" fill="#64748b">Two-factor authentication is designed but not built · it is not part of this flow.</text>
 </svg>
